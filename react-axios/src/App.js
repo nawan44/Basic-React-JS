@@ -1,25 +1,32 @@
-import logo from './logo.svg';
+import Axios from 'axios';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      data: []
+    };
+  }
+  componentDidMount() {
+    Axios.get("https://jsonplaceholder.typicode.com/posts").then(res => {
+      this.setState({ data: res.data });
+    });
+  }
+
+  render() {
+    return (
+      <div >
+        <p>React Hooks Rest API</p>
+        <ul>
+          {this.state.data.map(item => (
+            <li>{item.title}</li>
+          ))}
+        </ul>
+      </div >
+    );
+  }
 }
 
 export default App;
