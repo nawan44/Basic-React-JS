@@ -24,5 +24,3 @@ function ApiHook(){
       </div >
     );
 }
-
-export default ApiHook;
