@@ -1,0 +1,38 @@
+import React from 'react';
+import logo from './logo.svg';
+
+function Layout(props) {
+    return (
+        <div className="App">
+            <header className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <h1>React Hook #2 - Side Effect</h1>
+            </header>
+            <main className="App-body">{props.children} </main>
+            <footer className="App-footer">
+                <div className="links">
+                    <a href="https://www.youtube.com/user/sastranababan/?sub_confirmation=1">
+                        <img
+                            alt=""
+                            width={24}
+                            height={24}
+                            src="https://img.icons8.com/color/50/000000/youtube-squared.png"
+                        />
+            Youtube
+          </a>
+
+                    <a href="https://github.com/SastraNababan/bicara-hook">
+                        <img
+                            width={24}
+                            height={24}
+                            src="https://img.icons8.com/metro/26/000000/github.png"
+                            alt=""
+                        />
+            Github
+          </a>
+                </div>
+            </footer>
+        </div>
+    );
+}
+export default Layout
