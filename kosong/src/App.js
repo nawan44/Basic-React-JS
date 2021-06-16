@@ -3,42 +3,162 @@ import { useState } from "react";
 import "./App.css";
 import { TextField } from "@material-ui/core";
 import moment from "moment";
-var ageCalculator = require("age-calculator");
-let { AgeFromDateString, AgeFromDate } = require("age-calculator");
+import Autosuggest from "react-autosuggest";
+
+const users = [
+  {
+    nickname: "crazyfrog",
+    email: "frog@foobar.com",
+  },
+  {
+    nickname: "tatanka",
+    email: "ttt@hotmail.com",
+  },
+  {
+    nickname: "wild",
+    email: "www@mail.ru",
+  },
+  {
+    nickname: "race car",
+    email: "racing@gmail.com",
+  },
+  {
+    nickname: "cook",
+    email: "cooking@yahoo.com",
+  },
+];
 
 function App() {
-  const [dem_pat_birthyear, setCekUmur] = useState();
+  // constructor() {
+  //   super();
 
-  let ageFromDate = new AgeFromDate(new Date(1987, 0, 8)).age;
-  console.log("value from AgeFromDate", ageFromDate);
+  //   this.state = {
+  //     nicknameValue: '',
+  //     nicknameSuggestions: [],
+  //     emailValue: '',
+  //     emailSuggestions: []
+  //   };
+  // }
 
-  // var a = moment();
-  // var b = moment({dem_pat_birthyear}, "MM-YYYY");
-  // var age = moment.duration(a.diff(b));
-  // var years = age.years();
-  // var months = age.months();
-  // console.log("The age is " + years + " years " + months + " months ");
+  function escapeRegexCharacters(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function getSuggestions(value) {
+    const escapedValue = escapeRegexCharacters(value.trim());
+    const regex = new RegExp("^" + escapedValue, "i");
+
+    return users.filter(
+      (user) => regex.test(user.nickname) || regex.test(user.email)
+    );
+  }
+
+  function getSuggestionNickname(suggestion) {
+    return suggestion.nickname;
+  }
+
+  function getSuggestionEmail(suggestion) {
+    return suggestion.email;
+  }
+
+  function renderSuggestion(suggestion) {
+    return (
+      <span>
+        {suggestion.nickname} - {suggestion.email}
+      </span>
+    );
+  }
+  const [state, setState] = useState({
+    nicknameValue: "",
+    nicknameSuggestions: [],
+    emailValue: "",
+    emailSuggestions: [],
+  });
+
+  const onNicknameChange = (event, { newValue }) => {
+    setState({
+      nicknameValue: newValue,
+    });
+  };
+
+  const onEmailChange = (event, { newValue }) => {
+    setState({
+      emailValue: newValue,
+    });
+  };
+
+  const onNicknameSuggestionsFetchRequested = ({ value }) => {
+    setState({
+      nicknameSuggestions: getSuggestions(value),
+    });
+  };
+
+  const onNicknameSuggestionsClearRequested = () => {
+    setState({
+      nicknameSuggestions: [],
+    });
+  };
+
+  const onNicknameSuggestionSelected = (event, { suggestion }) => {
+    setState({
+      emailValue: suggestion.email,
+    });
+  };
+
+  const onEmailSuggestionsFetchRequested = ({ value }) => {
+    setState({
+      emailSuggestions: getSuggestions(value),
+    });
+  };
+
+  const onEmailSuggestionsClearRequested = () => {
+    setState({
+      emailSuggestions: [],
+    });
+  };
+
+  const onEmailSuggestionSelected = (event, { suggestion }) => {
+    setState({
+      nicknameValue: suggestion.nickname,
+    });
+  };
+
+  const { nicknameValue, nicknameSuggestions, emailValue, emailSuggestions } =
+    state;
+  const nicknameInputProps = {
+    placeholder: "nickname",
+    value: nicknameValue,
+    onChange: onNicknameChange,
+  };
+  const emailInputProps = {
+    placeholder: "email",
+    value: emailValue,
+    onChange: onEmailChange,
+  };
+
   return (
     <div className="App">
       {" "}
-      <TextField
-        id="outlined-basic"
-        label="Tanggal sekarang"
-        variant="outlined"
-        name="tanggalSekarang"
-        type="date"
-        InputLabelProps={{ shrink: true, required: true }}
-        // defaultValue={moment().format("YYYY-MM-DD")}
-        // defaultValue={moment("1995-12-25").format("YYYY-MM-DD")}
-        value={dem_pat_birthyear}
-      />
-      <TextField
-        id="outlined-basic"
-        label="Umur"
-        variant="outlined"
-        InputLabelProps={{ shrink: true, required: true }}
-        value={ageFromDate}
-      />
+      <div>
+        <Autosuggest
+          suggestions={nicknameSuggestions}
+          onSuggestionsFetchRequested={onNicknameSuggestionsFetchRequested}
+          onSuggestionsClearRequested={onNicknameSuggestionsClearRequested}
+          onSuggestionSelected={onNicknameSuggestionSelected}
+          getSuggestionValue={getSuggestionNickname}
+          renderSuggestion={renderSuggestion}
+          inputProps={nicknameInputProps}
+        />
+        <Autosuggest
+          suggestions={emailSuggestions}
+          onSuggestionsFetchRequested={onEmailSuggestionsFetchRequested}
+          onSuggestionsClearRequested={onEmailSuggestionsClearRequested}
+          onSuggestionSelected={onEmailSuggestionSelected}
+          getSuggestionValue={getSuggestionEmail}
+          renderSuggestion={renderSuggestion}
+          inputProps={emailInputProps}
+        />
+      </div>
     </div>
   );
 }
