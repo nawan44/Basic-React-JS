@@ -8,7 +8,7 @@ import ReactClass from "./react-class";
 function App() {
   return (
     <div className="container">
-      <ReactClass />
+      {/* <ReactClass /> */}
       <ReactHook />
     </div>
   );
