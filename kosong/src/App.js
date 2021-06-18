@@ -4,12 +4,14 @@ import React from "react";
 import Autosuggest from "react-autosuggest";
 import ReactHook from "./react-hook";
 import ReactClass from "./react-class";
+import ReactContoh from "./reactContoh";
 
 function App() {
   return (
     <div className="container">
-      {/* <ReactClass /> */}
-      <ReactHook />
+      <ReactClass />
+      {/* <ReactHook /> */}
+      {/* <ReactContoh /> */}
     </div>
   );
 }

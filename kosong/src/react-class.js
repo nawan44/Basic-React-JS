@@ -1,7 +1,7 @@
 import "./App.css";
 import React from "react";
 import Autosuggest from "react-autosuggest";
-import ReactHook from "./react-hook";
+import { TextField } from "@material-ui/core";
 const users = [
   {
     nickname: "crazyfrog",
@@ -11,22 +11,22 @@ const users = [
   {
     nickname: "tatanka",
     email: "ttt@hotmail.com",
-    alamat: "Bogor",
+    alamat: "Tangerang",
   },
   {
     nickname: "wild",
     email: "www@mail.ru",
-    alamat: "Tangerang",
+    alamat: "Bogor",
   },
   {
     nickname: "race car",
     email: "racing@gmail.com",
-    alamat: "Bekasi",
+    alamat: "Depok",
   },
   {
     nickname: "cook",
     email: "cooking@yahoo.com",
-    alamat: "Tangsel",
+    alamat: "bekasi",
   },
 ];
 
@@ -40,10 +40,7 @@ function getSuggestions(value) {
   const regex = new RegExp("^" + escapedValue, "i");
 
   return users.filter(
-    (user) =>
-      regex.test(user.nickname) ||
-      regex.test(user.email) ||
-      regex.test(user.alamat)
+    (user) => regex.test(user.nickname) || regex.test(user.email)
   );
 }
 
@@ -51,16 +48,10 @@ function getSuggestionNickname(suggestion) {
   return suggestion.nickname;
 }
 
-function getSuggestionEmail(suggestion) {
-  return suggestion.email;
-}
-function getSuggestionAlamat(suggestion) {
-  return suggestion.alamat;
-}
 function renderSuggestion(suggestion) {
   return (
     <span>
-      {suggestion.nickname} - {suggestion.email} - {suggestion.alamat}
+      {suggestion.nickname} - {suggestion.email}- {suggestion.alamat}
     </span>
   );
 }
@@ -90,7 +81,6 @@ class ReactClass extends React.Component {
       emailValue: newValue,
     });
   };
-
   onAlamatChange = (event, { newValue }) => {
     this.setState({
       alamatValue: newValue,
@@ -106,48 +96,15 @@ class ReactClass extends React.Component {
   onNicknameSuggestionsClearRequested = () => {
     this.setState({
       nicknameSuggestions: [],
+      emailSuggestions: [],
+      alamatSuggestions: [],
     });
   };
 
   onNicknameSuggestionSelected = (event, { suggestion }) => {
     this.setState({
       emailValue: suggestion.email,
-    });
-  };
-
-  onEmailSuggestionsFetchRequested = ({ value }) => {
-    this.setState({
-      emailSuggestions: getSuggestions(value),
-    });
-  };
-
-  onEmailSuggestionsClearRequested = () => {
-    this.setState({
-      emailSuggestions: [],
-    });
-  };
-
-  onEmailSuggestionSelected = (event, { suggestion }) => {
-    this.setState({
-      nicknameValue: suggestion.nickname,
-    });
-  };
-
-  onAlamatSuggestionsFetchRequested = ({ value }) => {
-    this.setState({
-      alamatSuggestions: getSuggestions(value),
-    });
-  };
-
-  onAlamatSuggestionsClearRequested = () => {
-    this.setState({
-      alamatSuggestions: [],
-    });
-  };
-
-  onAlamatSuggestionSelected = (event, { suggestion }) => {
-    this.setState({
-      nicknameValue: suggestion.nickname,
+      alamatValue: suggestion.alamat,
     });
   };
 
@@ -173,6 +130,7 @@ class ReactClass extends React.Component {
     const alamatInputProps = {
       placeholder: "alamat",
       value: alamatValue,
+
       onChange: this.onAlamatChange,
     };
     return (
@@ -186,22 +144,15 @@ class ReactClass extends React.Component {
           renderSuggestion={renderSuggestion}
           inputProps={nicknameInputProps}
         />
-        <Autosuggest
+
+        <TextField
           suggestions={emailSuggestions}
-          onSuggestionsFetchRequested={this.onEmailSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onEmailSuggestionsClearRequested}
-          onSuggestionSelected={this.onEmailSuggestionSelected}
-          getSuggestionValue={getSuggestionEmail}
-          renderSuggestion={renderSuggestion}
+          variant="outlined"
           inputProps={emailInputProps}
-        />{" "}
-        <Autosuggest
+        />
+        <TextField
           suggestions={alamatSuggestions}
-          onSuggestionsFetchRequested={this.onAlamatSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onAlamatSuggestionsClearRequested}
-          onSuggestionSelected={this.onAlamatSuggestionSelected}
-          getSuggestionValue={getSuggestionAlamat}
-          renderSuggestion={renderSuggestion}
+          variant="outlined"
           inputProps={alamatInputProps}
         />
       </div>
