@@ -9,8 +9,10 @@ import ReactContoh from "./reactContoh";
 function App() {
   return (
     <div className="container">
+      <h3>Class Component</h3>
       <ReactClass />
-      {/* <ReactHook /> */}
+      <h3>Hook</h3>
+      <ReactHook />
       {/* <ReactContoh /> */}
     </div>
   );

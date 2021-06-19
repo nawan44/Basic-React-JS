@@ -1,120 +1,126 @@
-import React, { useState, useEffect, useRef } from "react";
-import AutoSuggest from "react-autosuggest";
-import "./styles.css";
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import Autosuggest from "react-autosuggest";
+import { TextField } from "@material-ui/core";
+const users = [
+  {
+    nickname: "crazyfrog",
+    email: "frog@foobar.com",
+    alamat: "Jakarta",
+  },
+  {
+    nickname: "tatanka",
+    email: "ttt@hotmail.com",
+    alamat: "Tangerang",
+  },
+  {
+    nickname: "wild",
+    email: "www@mail.ru",
+    alamat: "Bogor",
+  },
+  {
+    nickname: "race car",
+    email: "racing@gmail.com",
+    alamat: "Depok",
+  },
+  {
+    nickname: "cook",
+    email: "cooking@yahoo.com",
+    alamat: "bekasi",
+  },
+];
+console.log(users);
 
-const App = () => {
-  const [value, setValue] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [dataPasien, setDataPasien] = useState([]);
-
-  const refMobilePhone = dataPasien.map((a) => a.mobile_phone);
-  console.log("ref", refMobilePhone);
-  // useEffect(() => {
-  //   refMobilePhone.target.value = dataPasien.map((a) => a.mobile_phone);
-  //   setValue();
-  // });
-  useEffect(() => {
-    getDataPasien();
-  }, []);
-  const handleChange = (event) => {
-    event.preventDefault();
-
-    setValue({ ...value, [event.target.name]: event.target.value });
-  };
-  const getDataPasien = async () => {
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_URL + `/api/medis/find?pasien=${value}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      );
-      let res = await response.json();
-      console.log("DATA PASIEN", res.data);
-      setDataPasien(res.data);
-      // let hasil = (items) => {
-      //   const nik = [];
-      //   const mobilePhone = [];
-      //   items.results.forEach((item) => {
-      //     nik.push(item.nik);
-      //     mobilePhone.push(item.mobilePhone);
-      //   });
-      // };
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-  const lowerCasedCompaniesNamaPasien = dataPasien.map((namaPasien) => {
-    return {
-      id: namaPasien.id,
-      nama: namaPasien.nama.toLowerCase(),
-    };
-  });
+function ReactClass() {
+  const [nicknameValue, setNicknameValue] = useState("");
+  const [nicknameSuggestions, setNicknameSuggestions] = useState([]);
+  const [emailValue, setEmailValue] = useState("");
+  const [alamatValue, setAlamatValue] = useState("");
+  console.log("ala", alamatValue);
+  function escapeRegexCharacters(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
 
   function getSuggestions(value) {
-    return lowerCasedCompaniesNamaPasien.filter((namaPasien) =>
-      namaPasien.nama.includes(value.trim().toLowerCase())
+    const escapedValue = escapeRegexCharacters(value.trim());
+    const regex = new RegExp("^" + escapedValue, "i");
+
+    return users.filter((user) => regex.test(user.nickname));
+  }
+
+  function getSuggestionNickname(suggestion) {
+    console.log(suggestion.nickname);
+
+    return suggestion.nickname;
+  }
+
+  function getSuggestionEmail(suggestion) {
+    console.log(suggestion.email);
+    return suggestion.email;
+  }
+  function getSuggestionAlamat(suggestion) {
+    return suggestion.alamat;
+  }
+
+  function renderSuggestion(suggestion) {
+    return (
+      <span>
+        {suggestion.nickname} - {suggestion.email}- {suggestion.alamat}
+      </span>
     );
   }
 
+  const onNicknameSuggestionSelected = (event, { suggestionValue }) => {
+    setNicknameSuggestions({
+      emailValue: suggestionValue.email,
+      alamatValue: suggestionValue.alamat,
+    });
+  };
+
   return (
-    <div>
-      <AutoSuggest
-        className="search-input"
-        suggestions={suggestions}
-        onSuggestionsClearRequestedNamaPasien={() => setSuggestions([])}
+    <div className="container">
+      <Autosuggest
+        suggestions={nicknameSuggestions}
+        onSuggestionsClearRequested={() => setNicknameSuggestions([])}
         onSuggestionsFetchRequested={({ value }) => {
-          // console.log(value);
-          setValue(value);
-          setSuggestions(getSuggestions(value));
+          console.log("val", value);
+          setNicknameValue(value);
+          setNicknameSuggestions(getSuggestions(value));
         }}
-        onSuggestionSelected={(_, { suggestionValue }) =>
-          console.log("Selected: " + suggestionValue)
-        }
-        getSuggestionValue={(suggestion) => suggestion.nama}
-        renderSuggestion={(suggestion) => <span>{suggestion.nama}</span>}
+        onSuggestionSelected={onNicknameSuggestionSelected}
+        getSuggestionValue={getSuggestionNickname}
+        renderSuggestion={renderSuggestion}
+        value={nicknameValue}
         inputProps={{
           placeholder: "Nama Karyawan ...",
-          value: value,
-          onChange: (_, { newValue, method }) => {
-            setValue(newValue);
+          value: nicknameValue,
+          onChange: (event, { newValue, method }) => {
+            setNicknameValue(newValue);
           },
         }}
         highlightFirstSuggestion={true}
       />
-      <br />
-
-      <AutoSuggest
-        className="search-input"
-        suggestions={suggestions}
-        onSuggestionsClearRequestedNamaPasien={() => setSuggestions([])}
-        onSuggestionsFetchRequested={({ value }) => {
-          // console.log(value);
-          setValue(value);
-          setSuggestions(getSuggestions(value));
-        }}
-        onSuggestionSelected={(_, { suggestionValue }) =>
-          console.log("Selected: " + suggestionValue)
-        }
-        getSuggestionValue={(suggestion) => suggestion.mobile_phone}
-        renderSuggestion={(suggestion) => (
-          <span>{suggestion.mobile_phone}</span>
-        )}
+      <TextField
+        variant="outlined"
         inputProps={{
-          placeholder: "No Handphone ...",
-          value: value,
-          onChange: (_, { newValue, method }) => {
-            setValue(newValue);
+          placeholder: "Email ...",
+          value: emailValue,
+          onChange: (event, { newValue, method }) => {
+            setEmailValue({ newValue });
           },
         }}
-        highlightFirstSuggestion={true}
       />
-      <input ref={refMobilePhone} name="mobilePhone" value={value} />
+      <TextField
+        variant="outlined"
+        value={alamatValue}
+        onChange={(event, { newValue }) => {
+          setAlamatValue({ alamatValue: newValue });
+
+          console.log("setAlamatValue", newValue);
+        }}
+      />
     </div>
   );
-};
+}
 
-export default App;
+export default ReactClass;

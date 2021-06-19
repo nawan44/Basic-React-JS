@@ -30,7 +30,6 @@ const users = [
   },
 ];
 
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -96,8 +95,6 @@ class ReactClass extends React.Component {
   onNicknameSuggestionsClearRequested = () => {
     this.setState({
       nicknameSuggestions: [],
-      emailSuggestions: [],
-      alamatSuggestions: [],
     });
   };
 
@@ -109,14 +106,8 @@ class ReactClass extends React.Component {
   };
 
   render() {
-    const {
-      nicknameValue,
-      nicknameSuggestions,
-      emailValue,
-      emailSuggestions,
-      alamatValue,
-      alamatSuggestions,
-    } = this.state;
+    const { nicknameValue, nicknameSuggestions, emailValue, alamatValue } =
+      this.state;
     const nicknameInputProps = {
       placeholder: "nickname",
       value: nicknameValue,
@@ -145,16 +136,8 @@ class ReactClass extends React.Component {
           inputProps={nicknameInputProps}
         />
 
-        <TextField
-          suggestions={emailSuggestions}
-          variant="outlined"
-          inputProps={emailInputProps}
-        />
-        <TextField
-          suggestions={alamatSuggestions}
-          variant="outlined"
-          inputProps={alamatInputProps}
-        />
+        <TextField variant="outlined" inputProps={emailInputProps} />
+        <TextField variant="outlined" inputProps={alamatInputProps} />
       </div>
     );
   }
