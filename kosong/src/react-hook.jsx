@@ -31,7 +31,7 @@ const users = [
 ];
 console.log(users);
 
-function ReactClass() {
+function ReactHook() {
   const [nicknameValue, setNicknameValue] = useState("");
   const [nicknameSuggestions, setNicknameSuggestions] = useState([]);
   const [emailValue, setEmailValue] = useState("");
@@ -70,11 +70,10 @@ function ReactClass() {
     );
   }
 
-  const onNicknameSuggestionSelected = (event, { suggestionValue }) => {
-    setNicknameSuggestions({
-      emailValue: suggestionValue.email,
-      alamatValue: suggestionValue.alamat,
-    });
+  const onNicknameSuggestionSelected = (event, { suggestion }) => {
+    console.log("ggggggg", suggestion);
+    setEmailValue(suggestion.email);
+    setAlamatValue(suggestion.alamat);
   };
 
   return (
@@ -95,6 +94,7 @@ function ReactClass() {
           placeholder: "Nama Karyawan ...",
           value: nicknameValue,
           onChange: (event, { newValue, method }) => {
+            console.log(newValue);
             setNicknameValue(newValue);
           },
         }}
@@ -105,22 +105,23 @@ function ReactClass() {
         inputProps={{
           placeholder: "Email ...",
           value: emailValue,
-          onChange: (event, { newValue, method }) => {
-            setEmailValue({ newValue });
+          onChange: (emailValue) => {
+            setEmailValue(emailValue);
           },
         }}
       />
       <TextField
         variant="outlined"
-        value={alamatValue}
-        onChange={(event, { newValue }) => {
-          setAlamatValue({ alamatValue: newValue });
-
-          console.log("setAlamatValue", newValue);
+        inputProps={{
+          placeholder: "Email ...",
+          value: alamatValue,
+          onChange: (alamatValue) => {
+            setAlamatValue(alamatValue);
+          },
         }}
       />
     </div>
   );
 }
 
-export default ReactClass;
+export default ReactHook;
