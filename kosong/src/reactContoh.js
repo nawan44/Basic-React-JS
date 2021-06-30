@@ -1,41 +1,41 @@
-// import "./App.css";
-// import React from "react";
-// import Autosuggest from "react-autosuggest";
-// import ReactHook from "./react-hook";
-// import randomColor from "randomcolor";
+import React, { useState, useEffect } from "react";
 
-// class ReactContoh extends React.Component {
-//   constructor() {
-//     this.state = {
-//       // Your initial state
-//       loading: true,
-//     };
-//   }
+const detailsProps = [
+  { text: "text1", amount: "100" },
+  { text: "text2", amount: "200" },
+];
+const ReactContoh = () => {
+  const [details_data, set_details_data] = useState([{ text: "", amount: "" }]);
+  useEffect(() => {
+    if (detailsProps) {
+      set_details_data(detailsProps);
+    }
+  }, [detailsProps]);
+  const details_handler = (event, index) => {
+    const items = [...details_data];
+    items[index][event.target.name] = event.target.value;
+    set_details_data(items);
+  };
+  return (
+    <div>
+      {details_data.map((el, index) => {
+        return (
+          <div key={index}>
+            <input
+              name="text"
+              value={el.text}
+              onChange={(e) => details_handler(e, index)}
+            />
+            <input
+              name="amount"
+              value={el.amount}
+              onChange={(e) => details_handler(e, index)}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
-//   componentDidMount() {
-//     fetch("https://pokeapi.co/api/v2/pokemon/")
-//       .then((resp) => resp.json())
-//       .then((items) => {
-//         const pokemon = [];
-//         const url = [];
-//         items.results.forEach((item) => {
-//           pokemon.push(item.name);
-//           url.push(item.url);
-//         });
-//         this.setState({ pokemon, url, loading: false });
-//       });
-//   }
-
-//   render() {
-//     if (loading) {
-//       return <Loader />;
-//     }
-//     return (
-//       <div>
-//         <Fetchpokemon data={this.state} />
-//       </div>
-//     );
-//   }
-// }
-
-// export default ReactContoh;
+export default ReactContoh;

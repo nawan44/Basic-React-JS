@@ -63,9 +63,7 @@ class ReactClass extends React.Component {
       nicknameValue: "",
       nicknameSuggestions: [],
       emailValue: "",
-      emailSuggestions: [],
       alamatValue: "",
-      alamatSuggestions: [],
     };
   }
 
