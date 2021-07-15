@@ -54,14 +54,6 @@ function ReactHook() {
     return suggestion.nickname;
   }
 
-  function getSuggestionEmail(suggestion) {
-    console.log(suggestion.email);
-    return suggestion.email;
-  }
-  function getSuggestionAlamat(suggestion) {
-    return suggestion.alamat;
-  }
-
   function renderSuggestion(suggestion) {
     return (
       <span>
