@@ -1,19 +1,23 @@
 import "./App.css";
 import React, { useState, useEffect, useRef } from "react";
 import Autosuggest from "react-autosuggest";
-import { Grid, TextField, FormControl, MenuItem } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  FormControl,
+  MenuItem,
+  Select,
+  Typography,
+  InputLabel,
+} from "@material-ui/core";
 
 const data = {
   alamat: "Jakarta, Bekasi",
   jumlah: [3, 4],
   nama: "rachmat, gunawan",
 };
-
 const aa = [data];
-
 const as = data.nama.split(",");
-// console.log("ar", ar);
-
 const users = [
   {
     nickname: "crazyfrog",
@@ -42,11 +46,7 @@ const users = [
   },
 ];
 
-function ReactHook() {
-  const [nicknameValue, setNicknameValue] = useState("");
-  const [nicknameSuggestions, setNicknameSuggestions] = useState([]);
-  const [emailValue, setEmailValue] = useState("");
-  const [alamatValue, setAlamatValue] = useState("");
+function ReactHook({ onClose }) {
   function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
@@ -58,51 +58,21 @@ function ReactHook() {
       set_details_data(users);
     }
   }, [users]);
-  function getSuggestions(value) {
-    const escapedValue = escapeRegexCharacters(value.trim());
-    const regex = new RegExp("^" + escapedValue, "i");
-
-    return users.filter(
-      (user) => regex.test(user.nickname) || regex.test(user.email)
-    );
-  }
-  function getSuggestionNickname(suggestion) {
-    console.log(suggestion.nickname);
-
-    return suggestion.nickname;
-  }
-  function renderSuggestion(suggestion) {
-    return (
-      <span>
-        {suggestion.nickname} - {suggestion.email}- {suggestion.alamat}
-      </span>
-    );
-  }
-  const onNicknameSuggestionSelected = (event, { suggestion }) => {
-    // console.log("ggggggg", suggestion);
-    setEmailValue(suggestion.email);
-    setAlamatValue(suggestion.alamat);
-  };
   const handleChange = (e, index) => {
     const newDoc = [...details_data];
     newDoc[index][e.target.name] = e.target.value;
     set_details_data(newDoc);
     // console.log("newDoc", newDoc);
   };
-  // var result = data.map((person) => ({
-  //   value: person.nama,
-  //   text: person.jumlah,
-  // }));
-  // console.log(result);
 
   // DROPDOWN
   const filterRef = React.useRef();
   const ref = useRef();
+  const [open, setOpen] = React.useState(false);
   const [text, setText] = useState("");
   const [menu, setMenu] = useState(null);
-
-  const [selectedOption, setSelectedOption] = React.useState("");
-  const [filterExpression, setFilterExpression] = React.useState("");
+  const [selectedOption, setSelectedOption] = useState("");
+  const [filterExpression, setFilterExpression] = useState("");
   const [state, setState] = useState({
     nama_obat: null,
     id_obat: null,
@@ -111,15 +81,40 @@ function ReactHook() {
     cara_pemakaian: null,
   });
   console.log("state", state);
+
   const onChangeSelection = (event) => {
     setState({
       ...state,
       [event.target.name]: event.target.value,
     });
+    // const value = event.target.value;
+    // setSelectedOption(value);
   };
-  const handleChangeCuk = (event) => {
+  const handleChangeAAA = (event, field) => {
     const abc = { ...state, [event.target.name]: event.target.value };
     setState(abc);
+
+    // if (event.keyCode === 13) {
+    //   setSelectedOption({ open: !!field });
+    // }
+  };
+  const handleChangeCing = (input, event) => {
+    // const abc = { ...state, [event.target.name]: event.target.value };
+    // setState(abc);
+    if (event.key === "Enter") {
+      setOpen({ open: !!input });
+    }
+  };
+  const handleInputChange = (input, event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+    }
+  };
+  const keyPress = (e) => {
+    if (e.key == "enter") {
+      handleCloseForm();
+      console.log("loggggggggggg");
+    }
   };
   const stopImmediatePropagation = (e) => {
     // filterRef.current.focus();
@@ -131,7 +126,15 @@ function ReactHook() {
     console.log(`value:`, value);
     setState(value);
   };
-
+  const onSelectClose = () => {
+    console.log("close");
+  };
+  const handleCloseForm = () => {
+    onClose(true);
+  };
+  const onSelectOpen = () => {
+    console.log("open");
+  };
   return (
     <div className="container">
       <Grid spacing={1} container>
@@ -158,7 +161,7 @@ function ReactHook() {
           }}
           // InputLabelProps={{ shrink: true }}
           SelectProps={{
-            // onChange: onChangeSelection,
+            onChange: onChangeSelection,
             // value: state.cara_pemakaian,
 
             MenuProps: {
@@ -174,8 +177,8 @@ function ReactHook() {
           }}
           id="cara_pemakaian"
           name="cara_pemakaian"
-          onChange={handleChangeCuk}
-          value={state.cara_pemakaian}
+          onChange={handleChangeAAA}
+          // value={state.cara_pemakaian}
         >
           <MenuItem value="Sebelum Makan" size="small" margin="dense">
             Sebelum Makan
@@ -189,25 +192,16 @@ function ReactHook() {
           <MenuItem value="Ditetes" size="small" margin="dense">
             Ditetes
           </MenuItem>
-          <MenuItem
-            name="lain"
-            size="small"
-            margin="dense"
-            onKeyDown={(e) => e.stopPropagation()}
-            onClickCapture={stopImmediatePropagation}
-            // value={handleChangeCuk}
-            // onChange={onChangeSelection}
-            // TextFieldProps ={{
-            //   onKeyDown={(e) => e.stopPropagation()}
-            //   // onChange={(event, selectedOption) => selectedOption} // You can get the `selectedValue` inside your handler function on every time user select some new value
-            //   // inputRef={filterRef}
-            //   // onChange={() => {
-            //   //   handleChangeCuk;
-            //   //   console.log("change");
-            //   // }}
-            //   // name="cara_pemakaian"
+          <hr />
 
-            // }}
+          <InputLabel id="lain">Lain -lain</InputLabel>
+          <Select
+            labelId="lain"
+            id="lain"
+            name="select"
+            value={state.cara_pemakaian}
+            fullWidth
+            handleChange={handleChangeAAA}
           >
             <TextField
               style={{ background: "red" }}
@@ -222,10 +216,17 @@ function ReactHook() {
               InputLabelProps={{
                 shrink: true,
               }}
-              value={state.cara_pemakaian}
-              onChange={handleChangeCuk}
+              onChange={handleChangeAAA}
+              // onKeyDown={keyPress}
+              onKeyPress={(data, input) => {
+                if (data.charCode === 13) {
+                  console.log("Key `Enter` pressed");
+                  data.stopPropagation();
+                }
+              }}
+              // menuIsOpen={open}
             />
-          </MenuItem>
+          </Select>
         </TextField>
       </FormControl>
     </div>
