@@ -165,7 +165,6 @@ function ReactHook() {
           value={state.jumlah}
           name="jumlah"
           // max={state.jumlah > jumlahValue}
-          required={state.jumlah < jumlahValue}
           label="jumlah"
           onChange={handleChangeJumlah}
           helperText={state.jumlah > jumlahValue && "Stok Obat Kurang"}
