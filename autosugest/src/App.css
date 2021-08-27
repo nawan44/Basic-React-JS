@@ -91,3 +91,8 @@
     transform: rotate(360deg);
   }
 }
+.error {
+  font-size: 9px;
+  color: red;
+  padding: 10px 5px;
+}

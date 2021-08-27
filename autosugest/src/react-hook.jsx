@@ -8,34 +8,53 @@ const users = [
     nickname: "crazyfrog",
     email: "frog@foobar.com",
     alamat: "Jakarta",
+    jumlah: 10,
   },
   {
     nickname: "tatanka",
     email: "ttt@hotmail.com",
     alamat: "Tangerang",
+    jumlah: 7,
   },
   {
     nickname: "wild",
     email: "www@mail.ru",
     alamat: "Bogor",
+    jumlah: 8,
   },
   {
     nickname: "race car",
     email: "racing@gmail.com",
     alamat: "Depok",
+    jumlah: 9,
   },
   {
     nickname: "cook",
     email: "cooking@yahoo.com",
     alamat: "bekasi",
+    jumlah: 4,
   },
 ];
 
 function ReactHook() {
+  const [state, setState] = useState({ jumlah: null });
   const [nicknameValue, setNicknameValue] = useState("");
   const [nicknameSuggestions, setNicknameSuggestions] = useState([]);
   const [emailValue, setEmailValue] = useState("");
   const [alamatValue, setAlamatValue] = useState("");
+  const [jumlahValue, setJumlahValue] = useState("");
+  const [errorJumlah, setErrorJumlah] = useState(false);
+
+  const handleChangeJumlah = (event) => {
+    event.preventDefault();
+    // let jml = event.target.value;
+
+    // if (jumlahValue > jml - 1) {
+    setState({ ...state, [event.target.name]: event.target.value });
+    // } else {
+    //   setErrorJumlah("❌ Stok Obat Kurang");
+    // }
+  };
   function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
@@ -71,6 +90,7 @@ function ReactHook() {
     console.log("ggggggg", suggestion);
     setEmailValue(suggestion.email);
     setAlamatValue(suggestion.alamat);
+    setJumlahValue(suggestion.jumlah);
   };
   const handleChange = (e, index) => {
     const newDoc = [...details_data];
@@ -124,6 +144,32 @@ function ReactHook() {
             },
           }}
         />
+        <br />
+        <br />
+        <TextField
+          variant="outlined"
+          label="stok"
+          inputProps={{
+            value: jumlahValue,
+            onChange: (jumlahValue) => {
+              setJumlahValue(jumlahValue);
+            },
+          }}
+        />
+        <br />
+        <br /> {errorJumlah && <div className="error">{errorJumlah}</div>}
+        <TextField
+          type="number"
+          variant="outlined"
+          error={state.jumlah > jumlahValue}
+          value={state.jumlah}
+          name="jumlah"
+          // max={state.jumlah > jumlahValue}
+          required={state.jumlah < jumlahValue}
+          label="jumlah"
+          onChange={handleChangeJumlah}
+          helperText={state.jumlah > jumlahValue && "Stok Obat Kurang"}
+        />{" "}
       </div>
     </div>
   );
