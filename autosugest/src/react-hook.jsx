@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import Autosuggest from "react-autosuggest";
-import { Grid, TextField } from "@material-ui/core";
+import { Grid, TextField, Button } from "@material-ui/core";
 
 const users = [
   {
@@ -35,26 +35,15 @@ const users = [
     jumlah: 4,
   },
 ];
-
 function ReactHook() {
-  const [state, setState] = useState({ jumlah: null });
   const [nicknameValue, setNicknameValue] = useState("");
   const [nicknameSuggestions, setNicknameSuggestions] = useState([]);
   const [emailValue, setEmailValue] = useState("");
   const [alamatValue, setAlamatValue] = useState("");
   const [jumlahValue, setJumlahValue] = useState("");
   const [errorJumlah, setErrorJumlah] = useState(false);
+  const [errors, setErrors] = useState("");
 
-  const handleChangeJumlah = (event) => {
-    event.preventDefault();
-    // let jml = event.target.value;
-
-    // if (jumlahValue > jml - 1) {
-    setState({ ...state, [event.target.name]: event.target.value });
-    // } else {
-    //   setErrorJumlah("❌ Stok Obat Kurang");
-    // }
-  };
   function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
@@ -92,84 +81,103 @@ function ReactHook() {
     setAlamatValue(suggestion.alamat);
     setJumlahValue(suggestion.jumlah);
   };
-  const handleChange = (e, index) => {
-    const newDoc = [...details_data];
-    newDoc[index][e.target.name] = e.target.value;
-    set_details_data(newDoc);
-    console.log("newDoc", newDoc);
-  };
+  const [formData, setFormData] = useState({ jumlah: "" });
 
+  const [isFormInvalid, setIsFormInvalid] = useState(false);
+  const validate = (formData) => {
+    if (formData.jumlah !== "" && formData.jumlah < jumlahValue) {
+      setIsFormInvalid(false);
+    } else {
+      setIsFormInvalid(true);
+    }
+  };
+  const handleFormChange = (event) => {
+    let data = formData;
+    data[event.target.name] = event.target.value;
+    setFormData(data);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate(formData)) {
+      console.log("data OK");
+    }
+  };
+  console.log("formData", formData);
   return (
     <div className="container">
-      <div>
-        <Autosuggest
-          suggestions={nicknameSuggestions}
-          onSuggestionsClearRequested={() => setNicknameSuggestions([])}
-          onSuggestionsFetchRequested={({ value }) => {
-            console.log("val", value);
-            setNicknameValue(value);
-            setNicknameSuggestions(getSuggestions(value));
-          }}
-          onSuggestionSelected={onNicknameSuggestionSelected}
-          getSuggestionValue={getSuggestionNickname}
-          renderSuggestion={renderSuggestion}
-          value={nicknameValue}
-          inputProps={{
-            placeholder: "Nama Karyawan ...",
-            value: nicknameValue,
-            onChange: (event, { newValue, method }) => {
-              console.log(newValue);
-              setNicknameValue(newValue);
-            },
-          }}
-          highlightFirstSuggestion={true}
-        />
-        <TextField
-          variant="outlined"
-          inputProps={{
-            placeholder: "Email ...",
-            value: emailValue,
-            onChange: (emailValue) => {
-              setEmailValue(emailValue);
-            },
-          }}
-        />
-        <TextField
-          variant="outlined"
-          inputProps={{
-            placeholder: "Email ...",
-            value: alamatValue,
-            onChange: (alamatValue) => {
-              setAlamatValue(alamatValue);
-            },
-          }}
-        />
-        <br />
-        <br />
-        <TextField
-          variant="outlined"
-          label="stok"
-          inputProps={{
-            value: jumlahValue,
-            onChange: (jumlahValue) => {
-              setJumlahValue(jumlahValue);
-            },
-          }}
-        />
-        <br />
-        <br /> {errorJumlah && <div className="error">{errorJumlah}</div>}
-        <TextField
-          type="number"
-          variant="outlined"
-          error={state.jumlah > jumlahValue}
-          value={state.jumlah}
-          name="jumlah"
-          // max={state.jumlah > jumlahValue}
-          label="jumlah"
-          onChange={handleChangeJumlah}
-          helperText={state.jumlah > jumlahValue && "Stok Obat Kurang"}
-        />{" "}
-      </div>
+      <form onSubmit={handleSubmit} noValidate>
+        <div>
+          <Autosuggest
+            suggestions={nicknameSuggestions}
+            onSuggestionsClearRequested={() => setNicknameSuggestions([])}
+            onSuggestionsFetchRequested={({ value }) => {
+              console.log("val", value);
+              setNicknameValue(value);
+              setNicknameSuggestions(getSuggestions(value));
+            }}
+            onSuggestionSelected={onNicknameSuggestionSelected}
+            getSuggestionValue={getSuggestionNickname}
+            renderSuggestion={renderSuggestion}
+            value={nicknameValue}
+            inputProps={{
+              placeholder: "Nama Karyawan ...",
+              value: nicknameValue,
+              onChange: (event, { newValue, method }) => {
+                console.log(newValue);
+                setNicknameValue(newValue);
+              },
+            }}
+            highlightFirstSuggestion={true}
+          />
+          <TextField
+            variant="outlined"
+            inputProps={{
+              placeholder: "Email ...",
+              value: emailValue,
+              onChange: (emailValue) => {
+                setEmailValue(emailValue);
+              },
+            }}
+          />
+          <TextField
+            variant="outlined"
+            inputProps={{
+              placeholder: "Email ...",
+              value: alamatValue,
+              onChange: (alamatValue) => {
+                setAlamatValue(alamatValue);
+              },
+            }}
+          />
+          <br />
+          <br />
+          <TextField
+            variant="outlined"
+            label="stok"
+            inputProps={{
+              value: jumlahValue,
+              onChange: (jumlahValue) => {
+                setJumlahValue(jumlahValue);
+              },
+            }}
+          />
+          <br />
+          <br /> {errorJumlah && <div className="error">{errorJumlah}</div>}
+          <TextField
+            variant="outlined"
+            error={isFormInvalid}
+            helperText={isFormInvalid && "Jumlah Melebihi stok / 0"}
+            name="jumlah"
+            label="jumlah"
+            defaultValue={formData.jumlah}
+            onChange={handleFormChange}
+          />
+          {/* {errors.jumlah && <p className="danger">{errors.jumlah}</p>} */}
+        </div>
+        <Button type="submit" name="search-button" onClick={validate}>
+          Save{" "}
+        </Button>
+      </form>
     </div>
   );
 }
