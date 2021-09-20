@@ -2,6 +2,7 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import Autosuggest from "react-autosuggest";
 import { Grid, TextField, Button } from "@material-ui/core";
+import { useForm, Controller } from "react-hook-form";
 
 const users = [
   {
@@ -36,13 +37,27 @@ const users = [
   },
 ];
 function ReactHook() {
+  const [date, setDate] = useState();
+
+  const [kirimObat, setKirimObat] = useState({
+    nama_obat: "",
+    jumlah: "",
+    tanggal_expired: "",
+  });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset,
+    control,
+  } = useForm();
   const [nicknameValue, setNicknameValue] = useState("");
   const [nicknameSuggestions, setNicknameSuggestions] = useState([]);
   const [emailValue, setEmailValue] = useState("");
   const [alamatValue, setAlamatValue] = useState("");
   const [jumlahValue, setJumlahValue] = useState("");
   const [errorJumlah, setErrorJumlah] = useState(false);
-  const [errors, setErrors] = useState("");
 
   function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -96,16 +111,22 @@ function ReactHook() {
     data[event.target.name] = event.target.value;
     setFormData(data);
   };
-  const handleSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    if (validate(formData)) {
+    if (e) {
       console.log("data OK");
     }
   };
   console.log("formData", formData);
+  const handleChange = (event) => {
+    setKirimObat({
+      ...kirimObat,
+      [event.target.name]: event.target.value,
+    });
+  };
   return (
     <div className="container">
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <Autosuggest
             suggestions={nicknameSuggestions}
@@ -173,8 +194,67 @@ function ReactHook() {
             onChange={handleFormChange}
           />
           {/* {errors.jumlah && <p className="danger">{errors.jumlah}</p>} */}
-        </div>
-        <Button type="submit" name="search-button" onClick={validate}>
+        </div>{" "}
+        <br /> <br />
+        <Grid item sm={5}>
+          <TextField
+            label="Tanggal Expired"
+            margin="dense"
+            variant="outlined"
+            name="tanggal_expired"
+            // required
+            minDate={(new Date().getFullYear() - 18, 11, 31)}
+            onChange={handleChange}
+            value={kirimObat.tanggal_expired}
+            {...register("tanggal_expired", { required: true })}
+            error={errors.tanggal_expired}
+            InputLabelProps={{
+              shrink: true,
+              required: true,
+              validate: (value) => value < 1,
+            }}
+            type="date"
+            style={{ maxWidth: "100%", margin: "0 5px" }}
+            className="text4"
+          />
+          {errors.tanggal_expired?.type === "required" && (
+            <span
+              style={{
+                fontSize: "9px",
+                color: "red",
+                margin: " 10px 0 0 0px",
+              }}
+            >
+              {" "}
+              *Nama Obat Kosong
+            </span>
+          )}
+        </Grid>{" "}
+        <br /> <br />
+        <Controller
+          name="date"
+          defaultValue={date}
+          control={control}
+          onChange={(value) => value[0]}
+          onChangeName="onDateChange"
+          valueName="date"
+          as={
+            <DatePicker locale={enGB}>
+              {({ inputProps, focused }) => (
+                <Input value={date} {...inputProps} />
+              )}
+            </DatePicker>
+          }
+        />
+        <ErrorMessage errors={errors} name="date">
+          {({ message }) => <Text sx={{ color: "red" }}>{message}</Text>}
+        </ErrorMessage>
+        <Button
+          type="submit"
+          style={{ background: "red" }}
+          name="search-button"
+          onClick={validate}
+        >
           Save{" "}
         </Button>
       </form>
