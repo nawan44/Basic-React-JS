@@ -196,7 +196,7 @@ function ReactHook() {
           {/* {errors.jumlah && <p className="danger">{errors.jumlah}</p>} */}
         </div>{" "}
         <br /> <br />
-        <Grid item sm={5}>
+        {/* <Grid item sm={5}>
           <TextField
             label="Tanggal Expired"
             margin="dense"
@@ -229,26 +229,8 @@ function ReactHook() {
               *Nama Obat Kosong
             </span>
           )}
-        </Grid>{" "}
+        </Grid>{" "} */}
         <br /> <br />
-        <Controller
-          name="date"
-          defaultValue={date}
-          control={control}
-          onChange={(value) => value[0]}
-          onChangeName="onDateChange"
-          valueName="date"
-          as={
-            <DatePicker locale={enGB}>
-              {({ inputProps, focused }) => (
-                <Input value={date} {...inputProps} />
-              )}
-            </DatePicker>
-          }
-        />
-        <ErrorMessage errors={errors} name="date">
-          {({ message }) => <Text sx={{ color: "red" }}>{message}</Text>}
-        </ErrorMessage>
         <Button
           type="submit"
           style={{ background: "red" }}
