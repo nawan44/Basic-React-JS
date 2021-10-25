@@ -43,6 +43,7 @@ function ReactHook() {
   const [alamatValue, setAlamatValue] = useState("");
   const [jumlahValue, setJumlahValue] = useState("");
   const [errorJumlah, setErrorJumlah] = useState(false);
+  const [userData, setUserData] = useState(users);
 
   function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -75,6 +76,15 @@ function ReactHook() {
       </span>
     );
   }
+  function sortUsersByAsc() {
+    const orderBy = users.orderBy(userData, ["name"], ["asc"]);
+    setUserData(orderBy);
+  }
+
+  function sortUsersByDesc() {
+    const orderBy = users.orderBy(userData, ["name"], ["desc"]);
+    setUserData(orderBy);
+  }
   const onNicknameSuggestionSelected = (event, { suggestion }) => {
     console.log("ggggggg", suggestion);
     setEmailValue(suggestion.email);
@@ -102,14 +112,30 @@ function ReactHook() {
   const [filter, setFilter] = useState("");
   const lowercasedFilter = filter.toString().toLowerCase();
   const filteredData = users.filter((item) => {
-    return Object.keys(item).some((key) =>
-      item[key].toString().toLowerCase().includes(lowercasedFilter)
-    );
+    return Object.keys(item).some((key) => {
+      if (item[key]) {
+        return item[key].toLowerCase().includes(lowercasedFilter);
+      }
+    });
   });
   const handleChangeData = (event) => {
     setFilter(event.target.value);
   };
-  console.log("filter", filter);
+  const sortAscending = () => {
+    // console.log("Ascending");
+    const aa = users.sort((a, b) => a.jumlah - b.jumlah);
+    return aa;
+  };
+
+  const sortDescending = () => {
+    // console.log("Descending");
+    const bb = users.sort((a, b) => b.jumlah - a.jumlah);
+    return bb;
+  };
+  console.log(
+    "users",
+    users.sort((a, b) => b.jumlah - a.jumlah)
+  );
   return (
     <div>
       <input value={filter} onChange={handleChangeData} />{" "}
@@ -120,6 +146,15 @@ function ReactHook() {
           </div>
         </div>
       ))}
+      <br />
+      {users.map((p, i) => (
+        <li>
+          {i} - Jumlah : {p.jumlah}
+        </li>
+      ))}
+      <button onClick={sortUsersByAsc}>asc</button>
+      <button onClick={sortUsersByDesc}>desc</button>
+      <br />
       <button
         className="newFlyerButton btn mb-4"
         type="button"
@@ -129,6 +164,8 @@ function ReactHook() {
           <span className="buttonText">ADD NEW</span>
         </span>
       </button>{" "}
+      <br />
+      <br />
       <table className="table mt-3 bordered table-hover  white-table addNewSocial">
         <tbody>
           {socialData.map((Social, idx) => (
