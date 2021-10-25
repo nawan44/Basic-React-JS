@@ -99,9 +99,27 @@ function ReactHook() {
     someArray.splice(idx, 1);
     setState({ socialData: someArray });
   };
+  const [filter, setFilter] = useState("");
+  const lowercasedFilter = filter.toString().toLowerCase();
+  const filteredData = users.filter((item) => {
+    return Object.keys(item).some((key) =>
+      item[key].toString().toLowerCase().includes(lowercasedFilter)
+    );
+  });
+  const handleChangeData = (event) => {
+    setFilter(event.target.value);
+  };
+  console.log("filter", filter);
   return (
     <div>
-      {" "}
+      <input value={filter} onChange={handleChangeData} />{" "}
+      {filteredData.map((item) => (
+        <div key={item.email}>
+          <div>
+            {item.nickname} {item.alamat} - {item.jumlah} - {item.email}
+          </div>
+        </div>
+      ))}
       <button
         className="newFlyerButton btn mb-4"
         type="button"
