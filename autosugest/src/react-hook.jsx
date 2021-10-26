@@ -9,7 +9,7 @@ const users = [
     nickname: "crazyfrog",
     email: "frog@foobar.com",
     alamat: "Jakarta",
-    jumlah: 10,
+    jumlah: 3,
   },
   {
     nickname: "tatanka",
@@ -32,7 +32,7 @@ const users = [
   {
     nickname: "cook",
     email: "cooking@yahoo.com",
-    alamat: "bekasi",
+    alamat: undefined,
     jumlah: 4,
   },
 ];
@@ -44,7 +44,10 @@ function ReactHook() {
   const [jumlahValue, setJumlahValue] = useState("");
   const [errorJumlah, setErrorJumlah] = useState(false);
   const [userData, setUserData] = useState(users);
+  const [asc, setAsc] = useState(true);
+  const [dsc, setDsc] = useState(false);
 
+  console.log("user kuu", userData);
   function escapeRegexCharacters(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
@@ -76,15 +79,19 @@ function ReactHook() {
       </span>
     );
   }
-  function sortUsersByAsc() {
-    const orderBy = users.orderBy(userData, ["name"], ["asc"]);
-    setUserData(orderBy);
-  }
+  const sortUsersByAsc = () => {
+    const sorted = [...userData].sort((a, b) => {
+      return b.jumlah - a.jumlah;
+    });
+    setUserData(sorted);
+  };
 
-  function sortUsersByDesc() {
-    const orderBy = users.orderBy(userData, ["name"], ["desc"]);
-    setUserData(orderBy);
-  }
+  const sortUsersByDesc = () => {
+    const sorted = [...userData].sort((a, b) => {
+      return a.jumlah - b.jumlah;
+    });
+    setUserData(sorted);
+  };
   const onNicknameSuggestionSelected = (event, { suggestion }) => {
     console.log("ggggggg", suggestion);
     setEmailValue(suggestion.email);
@@ -112,26 +119,20 @@ function ReactHook() {
   const [filter, setFilter] = useState("");
   const lowercasedFilter = filter.toString().toLowerCase();
   const filteredData = users.filter((item) => {
-    return Object.keys(item).some((key) => {
-      if (item[key]) {
-        return item[key].toLowerCase().includes(lowercasedFilter);
-      }
-    });
+    try {
+      return Object.keys(item).some((key) => {
+        if (item[key]) {
+          return item[key].toLowerCase().includes(lowercasedFilter);
+        }
+      });
+    } catch (e) {
+      console.log("data tidak ada");
+    }
   });
   const handleChangeData = (event) => {
     setFilter(event.target.value);
   };
-  const sortAscending = () => {
-    // console.log("Ascending");
-    const aa = users.sort((a, b) => a.jumlah - b.jumlah);
-    return aa;
-  };
 
-  const sortDescending = () => {
-    // console.log("Descending");
-    const bb = users.sort((a, b) => b.jumlah - a.jumlah);
-    return bb;
-  };
   console.log(
     "users",
     users.sort((a, b) => b.jumlah - a.jumlah)
@@ -139,21 +140,41 @@ function ReactHook() {
   return (
     <div>
       <input value={filter} onChange={handleChangeData} />{" "}
-      {filteredData.map((item) => (
+      {/* {filteredData.map((item) => (
         <div key={item.email}>
           <div>
             {item.nickname} {item.alamat} - {item.jumlah} - {item.email}
           </div>
         </div>
       ))}
-      <br />
-      {users.map((p, i) => (
+      <br /> */}
+      {userData.map((aa, i) => (
         <li>
-          {i} - Jumlah : {p.jumlah}
+          {i} - Jumlah : {aa.jumlah}
         </li>
       ))}
-      <button onClick={sortUsersByAsc}>asc</button>
-      <button onClick={sortUsersByDesc}>desc</button>
+      {asc && (
+        <button
+          onClick={() => {
+            setAsc(false);
+            setDsc(true);
+            sortUsersByAsc();
+          }}
+        >
+          asc
+        </button>
+      )}
+      {dsc && (
+        <button
+          onClick={() => {
+            setAsc(true);
+            setDsc(false);
+            sortUsersByDesc();
+          }}
+        >
+          desc
+        </button>
+      )}
       <br />
       <button
         className="newFlyerButton btn mb-4"
@@ -187,7 +208,7 @@ function ReactHook() {
                   // onChange={handleChange(state)}
                   inputProps={{
                     placeholder: "Nama Karyawan ...",
-                    value: nicknameValue[idx].name,
+                    value: nicknameValue,
                     name: "name",
 
                     onChange: (e, { newValue, method }) => {
